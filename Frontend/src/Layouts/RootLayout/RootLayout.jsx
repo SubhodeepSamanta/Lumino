@@ -16,16 +16,13 @@ const RootLayout = () => {
       <div className="rootLayout">
         <header>
           <Link to="/">
-            <img src="/public/logo.png" alt="logo" />
+            <img src="logo.png" alt="logo" />
             <span>Lunimo</span>
           </Link>
           <div>
-                <SignedOut>
-                <SignInButton />
-                </SignedOut>
                 <SignedIn>
                 <UserButton />
-      </SignedIn>
+                </SignedIn>
           </div>
         </header>
         <main>

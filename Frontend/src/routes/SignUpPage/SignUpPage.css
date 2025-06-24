@@ -1,0 +1,6 @@
+.signUpPage{
+    height: calc(100vh - 67px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
