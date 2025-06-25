@@ -1,0 +1,59 @@
+.newForm{
+    display: flex;
+    align-items: center;
+    background-color: #2c2937;
+    width: 50%;
+    border: none;
+    border-radius: 16px;
+    padding: 5px;
+    position: absolute;
+    bottom: 0;
+}
+
+.newForm input{
+    flex: 1;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: transparent;
+    border-radius: 16px;
+    padding: 10px 16px;
+    font-size: 1.01rem;
+}
+
+.newForm label{
+    background-color: #605e68;
+    padding: 10px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.newForm label img{
+    height: 15px;
+    width: 15px;
+}
+
+.newForm button{
+    background-color: #605e68;
+    padding: 10px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.newForm button img{
+    height: 15px;
+    width: 15px;
+}
+.endChat{
+    margin-top: 20px;
+}

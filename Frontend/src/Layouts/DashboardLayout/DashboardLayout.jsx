@@ -21,6 +21,10 @@ const DashboardLayout = () => {
         <Link to="/">New Chat</Link>
         <Link to="/">New Chat</Link>
         <Link to="/">New Chat</Link>
+        <Link to="/">New Chat</Link>
+        <Link to="/">New Chat</Link>
+        <Link to="/">New Chat</Link>
+        <Link to="/">New Chat</Link>
         </div>
         <hr />
         <div className="upgrade">
