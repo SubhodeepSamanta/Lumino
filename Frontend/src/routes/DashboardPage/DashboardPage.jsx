@@ -15,7 +15,34 @@ const DashboardPage = () => {
     if(!isLoaded) return "Loading...";
 
   return (
-    <div>DashboardPage</div>
+    <div className='dashboardPage'>
+      <div className="text">
+        <div className="text-logo">
+          <img src="/logo.png" alt="logo" />
+          <h1>LUMINO AI</h1>
+        </div>
+        <div className="options">
+          <div className="option">
+            <img src="/chat.png" alt="chat" />
+            <span>Create a new Chat</span>
+          </div>
+          <div className="option">
+            <img src="/image.png" alt="chat" />
+            <span>Analyze Images</span>
+          </div>
+          <div className="option">
+            <img src="/code.png" alt="chat" />
+            <span>Help me with my code</span>
+          </div>
+        </div>
+      </div>
+      <form>
+        <input type="text" placeholder='Ask me anything'/>
+        <button type='submit'>
+          <img src="/arrow.png" alt="" />
+        </button>
+      </form>
+    </div>
   )
 }
 
