@@ -29,3 +29,11 @@ header span{
 .rootLayout main{
     flex: 1;
 }
+
+
+
+@media screen and (max-width: 1024px){
+    .rootLayout{
+        padding: 16px 32px;
+    }
+}
