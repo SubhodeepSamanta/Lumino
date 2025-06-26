@@ -1,44 +1,68 @@
-import React, { useEffect, useRef, useState } from 'react'
-import './NewForm.css'
-import Upload from '../Upload/Upload';
-import { IKImage } from 'imagekitio-react';
+import React, { useEffect, useRef, useState } from "react";
+import "./NewForm.css";
+import Upload from "../Upload/Upload";
+import { IKImage } from "imagekitio-react";
+import add from "../../Utils/Gemini";
+import Markdown from 'react-markdown'
 
 const NewForm = () => {
-  const endRef= useRef(null);
+  const endRef = useRef(null);
+  const [question,setQuestion]= useState("");
+  const [answer,setAnswer]= useState("");
 
-  const [img,setImg]= useState({
-    isLoading:false,
-    isError:"",
-    onSuccess:false,
-    dbData:{}
-  })
+  const [img, setImg] = useState({
+    isLoading: false,
+    isError: "",
+    onSuccess: false,
+    dbData: {},
+  });
 
-  useEffect(()=>{
-    if(endRef.current || imgRef.current)
-    endRef.current.scrollIntoView({behavior: "smooth"});
-  },[img.isLoading,img.dbData])
-  
-  useEffect(()=>{
-    if(endRef.current || imgRef.current)
-    setTimeout(()=>{
-    endRef.current.scrollIntoView({behavior: "smooth"});
-      },400)
-  },[img.dbData])
+  useEffect(() => {
+    if (endRef.current || imgRef.current)
+      endRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [img.isLoading, img.dbData,answer,question]);
+
+  useEffect(() => {
+    if (endRef.current || imgRef.current)
+      setTimeout(() => {
+        endRef.current.scrollIntoView({ behavior: "smooth" });
+      }, 400);
+  }, [img.dbData]);
+
+  const handleClick= async(e)=>{
+    e.preventDefault();
+    const text= e.target.text.value;
+    if(!text) return;
+    setQuestion(text)
+    const response= await add(text);
+    setAnswer(response.text);
+  }
 
   return (
     <>
-    {img.isLoading && <div className='loading'>Loading...</div>}
-    {img.dbData?.filePath &&
-                  <IKImage urlEndpoint={import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT} path={img.dbData?.filePath} width={300} transformation={[{width:300}]}/>
-  }
-    <div className="endChat" ref={endRef}></div>
-    <form className='newForm'>
-      <Upload setImg={setImg}/>
-      <input type="text" placeholder='Ask me anything...'/>
-      <button type='send'><img src="/arrow.png" alt="send" /></button>
-    </form>
-    </>
-  )
-}
+      {img.isLoading && <div className="loading">Loading...</div>}
+      {img.dbData?.filePath && (
+        <IKImage
+        urlEndpoint={import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}
+        path={img.dbData?.filePath}
+        width={300}
+        transformation={[{ width: 300 }]}
+        />
+      )}
+      {question && <div className="message user">{question}</div>}
+      
+      {answer && <div className="message"><Markdown>{answer}</Markdown></div>}
 
-export default NewForm
+      <div className="endChat" ref={endRef}></div>
+      <form className="newForm" onSubmit={(e)=>handleClick(e)}>
+        <Upload setImg={setImg} />
+        <input type="text" name="text" placeholder="Ask me anything..." autoComplete="off" />
+        <button type="send">
+          <img src="/arrow.png" alt="send" />
+        </button>
+      </form>
+    </>
+  );
+};
+
+export default NewForm;

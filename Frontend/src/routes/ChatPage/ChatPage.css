@@ -24,11 +24,16 @@
     width: 50%;
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
 .chats .message{
     padding: 10px 15px;
     max-width: 90%;
+}
+
+.chats .message p,li{
+    padding: 8px 0;
 }
 
 .message.user{
