@@ -15,10 +15,15 @@ const NewForm = () => {
 
   useEffect(()=>{
     if(endRef.current || imgRef.current)
+    endRef.current.scrollIntoView({behavior: "smooth"});
+  },[img.isLoading,img.dbData])
+  
+  useEffect(()=>{
+    if(endRef.current || imgRef.current)
     setTimeout(()=>{
     endRef.current.scrollIntoView({behavior: "smooth"});
-      },250)
-  },[img.isLoading,img.dbData])
+      },400)
+  },[img.dbData])
 
   return (
     <>
