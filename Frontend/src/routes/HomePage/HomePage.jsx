@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import "./HomePage.css";
 import { Link } from "react-router-dom";
 import {TypeAnimation} from 'react-type-animation'
+import apiRequest from "../../Utils/apiRequest";
 
 const HomePage = () => {
   const [typingStatus, setTypingStatus]= useState("human1");
+  
   return (
     <div className="homepage">
       <img src="orbital.png" alt="background" className="orbital" />
