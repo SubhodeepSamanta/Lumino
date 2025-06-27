@@ -27,7 +27,6 @@ const Upload = ({setImg}) => {
 };
 
 const onSuccess = (res) => {
-  console.log("Upload Success:", res); // Log the full response
   setImg((prev) => ({ ...prev, isLoading: false, onSuccess:true , dbData: res }));
 };
 
@@ -36,8 +35,17 @@ const onUploadProgress = progress => {
 };
 
 const onUploadStart = evt => {
-  console.log("Start", evt);
-  setImg((prev) => ({ ...prev, isLoading: true, onSuccess:true}));
+  const file= evt.target.files[0];
+  const reader= new FileReader();
+  reader.onloadend=()=>{
+    setImg((prev) => ({ ...prev, isLoading: true, onSuccess:true, aiData:{
+      inlineData:{
+        data: reader.result.split(",")[1],
+        mimeType: file.type
+      }
+    }}));
+  }
+  reader.readAsDataURL(file);
 };
 
 const uploadRef= useRef(null);

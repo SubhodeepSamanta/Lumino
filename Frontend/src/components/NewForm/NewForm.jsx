@@ -15,6 +15,7 @@ const NewForm = () => {
     isError: "",
     onSuccess: false,
     dbData: {},
+    aiData: {}
   });
 
   useEffect(() => {
@@ -29,14 +30,19 @@ const NewForm = () => {
       }, 400);
   }, [img.dbData]);
 
-  const handleClick= async(e)=>{
-    e.preventDefault();
-    const text= e.target.text.value;
-    if(!text) return;
-    setQuestion(text)
-    const response= await add(text);
-    setAnswer(response.text);
-  }
+  const handleClick = async (e) => {
+  e.preventDefault();
+  const text = e.target.text.value;
+  if (!text) return;
+  setQuestion(text);
+  setAnswer("thinking...");
+  await add(text, (live) => {
+    setAnswer(live); 
+  });
+
+  e.target.reset();
+};
+
 
   return (
     <>
