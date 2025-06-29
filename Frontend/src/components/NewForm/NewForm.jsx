@@ -80,11 +80,23 @@ const NewForm = ({ data }) => {
     e.target.reset();
   };
 
+  const hasRun= useRef();
   useEffect(()=>{
+    if(!hasRun.current){
     if(data?.history?.length===1){
-      add(data.history[0].parts[0].text);
+      const text= data.history[0].parts[0].text;
+      console.log(text);
+      const runOnce= async()=>{
+        await add([text], (live) => {
+          setAnswer(live);
+       });
+       mutation.mutate();
+      }
+      runOnce();
     }
-  },[]);
+  }
+  hasRun.current= true;
+  },[data.history,mutation]);
 
   return (
     <>

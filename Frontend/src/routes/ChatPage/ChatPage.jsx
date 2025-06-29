@@ -32,7 +32,7 @@ const ChatPage = () => {
         <div className="chats">
           {
             data?.history?.map((message,i)=>(
-              <>
+              <React.Fragment key={i}>
               {message.img && (
                 <IKImage 
                     urlEndpoint={import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT}
@@ -48,10 +48,10 @@ const ChatPage = () => {
                   {message.parts[0].text}
                 </Markdown>
               </div>
-              </>
+              </React.Fragment>
             ))
           }
-      <NewForm data={data}/>
+      {data && <NewForm data={data}/>}
         </div>
       </div>
     </div>

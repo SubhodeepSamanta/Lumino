@@ -15,6 +15,10 @@ a{
   color: inherit;
 }
 
+img{
+  align-self: flex-end;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
