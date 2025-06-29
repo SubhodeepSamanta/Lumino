@@ -31,7 +31,7 @@ const connectDb= async()=>{
     process.exit(1);
   }
 }
-connectDb();
+connectDB();
 
 const imagekit = new ImageKit({
   urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
@@ -113,8 +113,18 @@ app.get("/api/userchats",legacyRequireAuth,async(req,res)=>{
   const {userId} = req.auth();
   try{
     const userchats= await UserChats.find({userId});
-    console.log(userchats[0].chats);
-    res.status(200).send(userchats[0].chats)
+    res.status(200).send(userchats[0].chats);
+  }catch(err){
+    console.log(err);
+    return res.status(500).send("Error while fetching userchats");
+  }
+})
+
+app.get("/api/chats/:id",legacyRequireAuth,async(req,res)=>{
+  const {userId} = req.auth();
+  try{
+    const chat= await Chat.findOne({_id: req.params.id ,userId});
+    res.status(200).send(chat);
   }catch(err){
     console.log(err);
     return res.status(500).send("Error while fetching userchats");
