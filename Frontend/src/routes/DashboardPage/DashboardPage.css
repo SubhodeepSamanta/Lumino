@@ -21,6 +21,10 @@
     opacity: 0.2;
 }
 
+.text-logo img{
+    align-self: center;
+}
+
 .text img{
     height: 65px;
     width: 65px;
@@ -47,12 +51,15 @@
     flex-direction: column;
     border: 1px solid #555;
     border-radius: 12px;
-    padding: 20px 24px;
+    padding: 24px 24px;
     cursor: pointer;
+    opacity: 0.9;
 }
 
 .option span{
+    margin-top: 8px;
     font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 .option img{

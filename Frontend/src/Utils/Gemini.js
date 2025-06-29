@@ -1,20 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
+import apiRequest from "./apiRequest";
 
-const add = async (question, onStream) => {
+const add = async (question,chatId, onStream) => {
   const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
+  const response= await apiRequest(`/api/chats/${chatId}`);
+  const historyData= response.data.history;
+  
+  const transformedHistory= historyData.map((msg)=>({
+    role: msg.role,
+    parts: msg.parts.map((p) => ({ text: p.text }))
+}))
   const chat = ai.chats.create({
     model: "gemini-2.5-flash",
-    history: [
-      {
-        role: "user",
-        parts: [{ text: "Hello" }],
-      },
-      {
-        role: "model",
-        parts: [{ text: "Great to meet you. What would you like to know?" }],
-      },
-    ],
+    history: transformedHistory
   });
 
   const stream = await chat.sendMessageStream({message: question});

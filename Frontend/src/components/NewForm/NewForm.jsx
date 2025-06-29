@@ -7,7 +7,7 @@ import Markdown from "react-markdown";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import apiRequest from "../../Utils/apiRequest";
 
-const NewForm = ({ data }) => {
+const NewForm = ({ data , chatId }) => {
   const endRef = useRef(null);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -68,11 +68,11 @@ const NewForm = ({ data }) => {
     setQuestion(text);
     setAnswer("thinking...");
     if (img.aiData && Object.keys(img.aiData).length > 0) {
-      await add([text, img.aiData], (live) => {
+      await add([text, img.aiData], chatId, (live) => {
         setAnswer(live);
       });
     } else {
-      await add([text], (live) => {
+      await add([text], chatId, (live) => {
         setAnswer(live);
       });
     }
@@ -87,7 +87,7 @@ const NewForm = ({ data }) => {
       const text= data.history[0].parts[0].text;
       console.log(text);
       const runOnce= async()=>{
-        await add([text], (live) => {
+        await add([text],chatId, (live) => {
           setAnswer(live);
        });
        mutation.mutate();
@@ -96,7 +96,7 @@ const NewForm = ({ data }) => {
     }
   }
   hasRun.current= true;
-  },[data.history,mutation]);
+  },[data.history,mutation,chatId]);
 
   return (
     <>

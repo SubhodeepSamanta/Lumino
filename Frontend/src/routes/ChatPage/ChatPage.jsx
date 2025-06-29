@@ -51,7 +51,7 @@ const ChatPage = () => {
               </React.Fragment>
             ))
           }
-      {data && <NewForm data={data}/>}
+      {data && <NewForm data={data} chatId={chatId}/>}
         </div>
       </div>
     </div>
