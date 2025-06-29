@@ -4,6 +4,7 @@ import ImageKit from "imagekit";
 import connectDB from "./utilities/connectDB.js";
 import Chat from "./models/chat.model.js";
 import UserChats from "./models/userChats.model.js";
+import { clerkMiddleware } from '@clerk/express';
 
 const app = express();
 const PORT = process.env.PORT;
@@ -30,8 +31,28 @@ app.get("/api/upload", (req, res) => {
   res.send(result);
 });
 
-app.post("/api/chats", async (req, res) => {
-  const { userId, text } = req.body;
+app.use(clerkMiddleware());
+
+const legacyRequireAuth = async (req, res, next) => {
+  try {
+    const {userId} = req.auth();
+    if(userId){
+      next();
+    }else{
+      return res.status(401).send("Unauthorised");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+app.post("/api/chats", legacyRequireAuth, async (req, res) => {
+  const { text } = req.body;
+  const {userId} = req.auth();
+  
+  if (!userId) {
+    return res.status(401).send("Unauthorised");
+  }
   try {
     const newChat = new Chat({
       userId,
@@ -54,7 +75,7 @@ app.post("/api/chats", async (req, res) => {
       });
       await newUserChats.save();
     } else {
-      UserChats.updateOne(
+      await UserChats.updateOne(
         { userId },
         {
           $push: {
@@ -71,9 +92,21 @@ app.post("/api/chats", async (req, res) => {
     res.status(200).send(newChat._id);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error while fetching chats");
+    return res.status(500).send("Error while fetching chats");
   }
 });
+
+app.get("/api/userchats",legacyRequireAuth,async(req,res)=>{
+  const {userId} = req.auth();
+  try{
+    const userchats= await UserChats.find({userId});
+    console.log(userchats[0].chats);
+    res.status(200).send(userchats[0].chats)
+  }catch(err){
+    console.log(err);
+    return res.status(500).send("Error while fetching userchats");
+  }
+})
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
