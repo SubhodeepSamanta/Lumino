@@ -4,6 +4,7 @@ import Upload from "../Upload/Upload";
 import { IKImage } from "imagekitio-react";
 import add from "../../Utils/Gemini";
 import Markdown from 'react-markdown'
+import apiRequest from "../../Utils/apiRequest";
 
 const NewForm = () => {
   const endRef = useRef(null);
@@ -36,7 +37,6 @@ const NewForm = () => {
   if (!text) return;
   setQuestion(text);
   setAnswer("thinking...");
-  console.log(img.aiData);
   if (img.aiData && Object.keys(img.aiData).length > 0) {
     await add(
       [text,img.aiData],
@@ -49,7 +49,17 @@ const NewForm = () => {
       setAnswer(live);
     });
   }
+  
+  const response= await apiRequest.post('/api/chats',{text});
+  console.log(response);
 
+  setImg({
+    isLoading: false,
+    isError: "",
+    onSuccess: false,
+    dbData: {},
+    aiData:{}
+  })
   e.target.reset();
 };
 

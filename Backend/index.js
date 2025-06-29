@@ -11,6 +11,8 @@ app.use(cors({
     credentials: true
 }))
 
+app.use(express.json());
+
 connectDB();
 
 const imagekit = new ImageKit({
@@ -19,9 +21,14 @@ const imagekit = new ImageKit({
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY
 });
 
-app.get('/auth', function (req, res) {
+app.get('/api/upload', function (req, res) {
   const result = imagekit.getAuthenticationParameters();
   res.send(result);
+});
+
+app.post('/api/chats', function (req, res) {
+  const {text}= req.body;
+  console.log(text);
 });
 
 
