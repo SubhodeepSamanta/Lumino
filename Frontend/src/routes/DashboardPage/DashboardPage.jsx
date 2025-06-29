@@ -3,10 +3,23 @@ import './DashboardPage.css'
 import { useAuth } from '@clerk/clerk-react'
 import { useNavigate } from 'react-router-dom';
 import apiRequest from '../../Utils/apiRequest';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const DashboardPage = () => {
+  const navigate= useNavigate();
+  const queryClient= useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async (text)=>{
+      const response= await apiRequest.post('/api/chats',{text});
+      return response.data;
+    },
+    onSuccess:(id)=>{
+      queryClient.invalidateQueries({queryKey:["userChats"]})
+      navigate(`/dashboard/chats/${id}`);
+    }
+  })
+
     const { userId, isLoaded}= useAuth();
-    const navigate= useNavigate();
     useEffect(()=>{
         if(isLoaded && !userId){
             navigate('/sign-in');
@@ -18,8 +31,8 @@ const DashboardPage = () => {
     const handleSubmit= async(e)=>{
       e.preventDefault();
       const text= e.target.text.value;
-      const response= await apiRequest.post('/api/chats',{userId,text});
-      console.log(response);
+      if(!text) return;
+      mutation.mutate(text);
     }
 
   return (

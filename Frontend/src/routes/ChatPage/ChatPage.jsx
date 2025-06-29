@@ -9,11 +9,11 @@ import { IKImage } from 'imagekitio-react'
 
 const ChatPage = () => {
 
-      const path= useLocation();
+      const path= useLocation().pathname;
       const chatId= path.split('/').pop();
   
       const handleChatsFetch= async()=>{
-          const response= await apiRequest.get(`/api/chats${chatId}`);
+          const response= await apiRequest.get(`/api/chats/${chatId}`);
           return response.data;
       }
   
@@ -30,7 +30,6 @@ const ChatPage = () => {
     <div className='chatPage'>
       <div className="wrapper">
         <div className="chats">
-          <div className="message">Test message</div>
           {
             data?.history?.map((message,i)=>(
               <>

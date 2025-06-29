@@ -11,7 +11,7 @@ const ChatList = () => {
     }
 
   const { isPending, error, data } = useQuery({
-    queryKey: ["repoData"],
+    queryKey: ["userChats"],
     queryFn: handleChatsFetch
   });
 
