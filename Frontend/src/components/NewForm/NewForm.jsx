@@ -18,25 +18,29 @@ const NewForm = () => {
   });
 
   useEffect(() => {
-    if (endRef.current || imgRef.current)
+    if (endRef.current)
       endRef.current.scrollIntoView({ behavior: "smooth" });
   }, [img.isLoading, img.dbData,answer,question]);
 
   useEffect(() => {
-    if (endRef.current || imgRef.current)
+    if (endRef.current)
       setTimeout(() => {
         endRef.current.scrollIntoView({ behavior: "smooth" });
       }, 400);
   }, [img.dbData]);
 
-  const handleClick= async(e)=>{
-    e.preventDefault();
-    const text= e.target.text.value;
-    if(!text) return;
-    setQuestion(text)
-    const response= await add(text);
-    setAnswer(response.text);
-  }
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  const text = e.target.text.value;
+  if (!text) return;
+  setQuestion(text);
+  setAnswer("thinking...");
+  await add(text, (live) => {
+    setAnswer(live); 
+  });
+
+  e.target.reset();
+};
 
   return (
     <>
@@ -54,7 +58,7 @@ const NewForm = () => {
       {answer && <div className="message"><Markdown>{answer}</Markdown></div>}
 
       <div className="endChat" ref={endRef}></div>
-      <form className="newForm" onSubmit={(e)=>handleClick(e)}>
+      <form className="newForm" onSubmit={(e)=>handleSubmit(e)}>
         <Upload setImg={setImg} />
         <input type="text" name="text" placeholder="Ask me anything..." autoComplete="off" />
         <button type="send">

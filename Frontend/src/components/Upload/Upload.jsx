@@ -27,7 +27,7 @@ const Upload = ({setImg}) => {
 };
 
 const onSuccess = (res) => {
-  console.log("Upload Success:", res); // Log the full response
+  console.log("Upload Success:", res); 
   setImg((prev) => ({ ...prev, isLoading: false, onSuccess:true , dbData: res }));
 };
 
