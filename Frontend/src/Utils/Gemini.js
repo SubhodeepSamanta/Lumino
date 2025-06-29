@@ -17,7 +17,7 @@ const add = async (question, onStream) => {
     ],
   });
 
-  const stream = await chat.sendMessageStream({ message: question });
+  const stream = await chat.sendMessageStream({message: question});
   let finalText = "";
   for await (const chunk of stream) {
     const text = chunk.text;

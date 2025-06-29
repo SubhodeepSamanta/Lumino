@@ -15,6 +15,7 @@ const NewForm = () => {
     isError: "",
     onSuccess: false,
     dbData: {},
+    aiData:{}
   });
 
   useEffect(() => {
@@ -35,9 +36,19 @@ const NewForm = () => {
   if (!text) return;
   setQuestion(text);
   setAnswer("thinking...");
-  await add(text, (live) => {
-    setAnswer(live); 
-  });
+  console.log(img.aiData);
+  if (img.aiData && Object.keys(img.aiData).length > 0) {
+    await add(
+      [text,img.aiData],
+      (live) => {
+        setAnswer(live);
+      } 
+    );
+  } else {
+    await add([text], (live) => {
+      setAnswer(live);
+    });
+  }
 
   e.target.reset();
 };
