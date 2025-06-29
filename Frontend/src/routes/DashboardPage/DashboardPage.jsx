@@ -18,7 +18,7 @@ const DashboardPage = () => {
     const handleSubmit= async(e)=>{
       e.preventDefault();
       const text= e.target.text.value;
-      const response= await apiRequest.post("/api/chats",{ text});
+      const response= await apiRequest.post('/api/chats',{userId,text});
       console.log(response);
     }
 
@@ -45,7 +45,7 @@ const DashboardPage = () => {
         </div>
       </div>
       <form onSubmit={(e)=>handleSubmit(e)}>
-        <input type="text" name='text' placeholder='Ask me anything' autoComplete='off'/>
+        <input type="text"  name="text" placeholder='Ask me anything' autoComplete='off'/>
         <button type='submit'>
           <img src="/arrow.png" alt="" />
         </button>

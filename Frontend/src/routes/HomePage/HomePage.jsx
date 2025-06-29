@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./HomePage.css";
 import { Link } from "react-router-dom";
 import {TypeAnimation} from 'react-type-animation'
-import apiRequest from "../../Utils/apiRequest";
 
 const HomePage = () => {
   const [typingStatus, setTypingStatus]= useState("human1");

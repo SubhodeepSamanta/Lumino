@@ -1,18 +1,24 @@
-import express from 'express'
-import cors from 'cors'
-import ImageKit from 'imagekit';
-import mongoose from 'mongoose';
-import chat from './models/chat.model.js';
-import userChats from './models/userChats.model.js';
-import { requireAuth } from '@clerk/express'
+import express from "express";
+import cors from "cors";
+import ImageKit from "imagekit";
+import connectDB from "./utilities/connectDB.js";
+import Chat from "./models/chat.model.js";
+import UserChats from "./models/userChats.model.js";
+import { clerkMiddleware } from '@clerk/express';
 
-const app= express();
-const PORT= process.env.PORT;
+const app = express();
+const PORT = process.env.PORT;
 
-app.use(cors({
+app.use(
+  cors({
     origin: process.env.CLIENT_URL,
-    credentials: true
-}))
+    credentials: true,
+  })
+);
+
+app.use(express.json());
+
+connectDB();
 
 app.use(express.json());
 
@@ -28,85 +34,93 @@ const connectDb= async()=>{
 connectDb();
 
 const imagekit = new ImageKit({
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT, 
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
 });
 
-app.get('/api/test',requireAuth(),(req,res)=>{
-  console.log("success");
-  res.send("success");
-})
+app.get("/api/upload", (req, res) => {
+  const result = imagekit.getAuthenticationParameters();
+  res.send(result);
+});
 
-app.post('/api/chats', requireAuth() , async (req, res)=>{
-  const {text}= req.body;
-  const userId= req.auth.userId;
-  try{
-    const newChat= new chat({
-      userId: userId,
-      history:[{role: "user",parts: [{ text }]}]
-    })
-    const savedChat= await newChat.save();
+app.use(clerkMiddleware());
 
-    const user= await userChats.findOne({userId:userId});
-    console.log(user);
-    if(!user){
-      const newUserChats= new userChats({
-        userId: userId,
-        chats:[
+const legacyRequireAuth = async (req, res, next) => {
+  try {
+    const {userId} = req.auth();
+    if(userId){
+      next();
+    }else{
+      return res.status(401).send("Unauthorised");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+app.post("/api/chats", legacyRequireAuth, async (req, res) => {
+  const { text } = req.body;
+  const {userId} = req.auth();
+  
+  if (!userId) {
+    return res.status(401).send("Unauthorised");
+  }
+  try {
+    const newChat = new Chat({
+      userId,
+      history: [{ role: "user", parts: [{ text }] }],
+    });
+    const savedChat = await newChat.save();
+
+    //userchat exists
+    const userChats = await UserChats.findOne({ userId });
+
+    if (!userChats) {
+      const newUserChats = new UserChats({
+        userId,
+        chats: [
           {
             _id: savedChat._id,
-            title: text.substring(0,20),
-          }
-        ]
-      })
+            title: text.substring(0, 20),
+          },
+        ],
+      });
       await newUserChats.save();
-    }else{
-      await userChats.updateOne({userId:userId},{
-        $push:{
-          chats:{
-            _id:savedChat._id,
-            title: text.substring(0,20),
-          }
+    } else {
+      await UserChats.updateOne(
+        { userId },
+        {
+          $push: {
+            chats: [
+              {
+                _id: savedChat._id,
+                title: text.substring(0, 20),
+              },
+            ],
+          },
         }
-      })
+      );
     }
     res.status(200).send(newChat._id);
-  }catch(err){
+  } catch (err) {
     console.error(err);
-    res.status(500).send(`Server Error`);
+    return res.status(500).send("Error while fetching chats");
   }
 });
 
-app.get("/api/userchats", requireAuth() , async(req,res)=>{
-  const {userId}= req.auth();
+app.get("/api/userchats",legacyRequireAuth,async(req,res)=>{
+  const {userId} = req.auth();
   try{
-    const user= await userChats.find({userId});
-    res.status(200).send(user[0].chats);
+    const userchats= await UserChats.find({userId});
+    console.log(userchats[0].chats);
+    res.status(200).send(userchats[0].chats)
   }catch(err){
-    console.error(err);
-    res.status(500).send('error fetching User chats');
+    console.log(err);
+    return res.status(500).send("Error while fetching userchats");
   }
-} )
-
-app.get("/api/chats/:id", requireAuth() , async(req,res)=>{
-  const {userId}= req.auth();
-  try{
-    const chats= await chat.find({_id: req.params.id, userId});
-    res.status(200).send(chats);
-  }catch(err){
-    console.error(err);
-    res.status(500).send('error fetching chats');
-  }
-} )
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(401).send('Unauthenticated!');
-});
-
-
-
-app.listen(PORT,()=>{
-    console.log(`Server is running on PORT ${PORT}`);
 })
+
+app.listen(PORT, () => {
+  console.log(`Server is running on PORT ${PORT}`);
+});
