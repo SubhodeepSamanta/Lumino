@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import './DashboardPage.css'
 import { useAuth } from '@clerk/clerk-react'
 import { useNavigate } from 'react-router-dom';
+import apiRequest from '../../Utils/apiRequest';
 
 const DashboardPage = () => {
     const { userId, isLoaded}= useAuth();
@@ -13,6 +14,13 @@ const DashboardPage = () => {
     },[userId,isLoaded,navigate]);
 
     if(!isLoaded) return "Loading...";
+
+    const handleSubmit= async(e)=>{
+      e.preventDefault();
+      const text= e.target.text.value;
+      const response= await apiRequest.post('/api/chats',{userId,text});
+      console.log(response);
+    }
 
   return (
     <div className='dashboardPage'>
@@ -36,8 +44,8 @@ const DashboardPage = () => {
           </div>
         </div>
       </div>
-      <form>
-        <input type="text" placeholder='Ask me anything'/>
+      <form onSubmit={(e)=>handleSubmit(e)}>
+        <input type="text"  name="text" placeholder='Ask me anything' autoComplete='off'/>
         <button type='submit'>
           <img src="/arrow.png" alt="" />
         </button>
