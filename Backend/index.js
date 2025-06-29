@@ -131,6 +131,31 @@ app.get("/api/chats/:id",legacyRequireAuth,async(req,res)=>{
   }
 })
 
+app.put('/api/chats/:id',legacyRequireAuth, async(req,res)=>{
+  const {userId} = req.auth();
+  const {question,answer,img}= req.body;
+  const newItems= [
+    ...(question?[{role:"user", parts:[{text:question}],...(img && {img})}]:[]),
+    {role:"model", parts:[{text:answer}]}
+  ]
+  try{
+    const updatedChat= await Chat.updateOne({_id:req.params.id,userId},
+      {
+        $push:{
+          history:{
+            $each: newItems
+          }
+        }
+      }
+    );
+
+    res.status(200).send(updatedChat);
+  }catch(err){
+    console.log(err);
+    return res.status(500).send("Error adding chat");
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
 });

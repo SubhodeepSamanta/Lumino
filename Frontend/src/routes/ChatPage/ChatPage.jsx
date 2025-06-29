@@ -51,7 +51,7 @@ const ChatPage = () => {
               </>
             ))
           }
-      <NewForm/>
+      <NewForm data={data}/>
         </div>
       </div>
     </div>
