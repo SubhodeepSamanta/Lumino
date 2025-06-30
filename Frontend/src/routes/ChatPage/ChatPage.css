@@ -44,3 +44,38 @@
     border: none;
     border-radius: 12px;
 }
+
+@media screen and (max-width: 900px) {
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+    .wrapper .chats {
+        width: 90%;
+    }
+    .chatPage .newForm {
+        width: 90%;
+        margin: 0 auto;
+        bottom: 16px;
+        left: 0;
+        right: 0;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .chatPage .newForm {
+        width: 90%;
+        margin: 0 auto;
+        bottom: 16px;
+        left: 0;
+        right: 0;
+    }
+    .chatPage .newForm input{
+        max-width: 12rem;
+    }
+    .chatPage .newForm button{
+        margin-left: auto;
+    }
+}

@@ -151,6 +151,7 @@
 }
 
 .terms img{
+    align-self: center;
     height: 30px;
     width: 30px;
 }
@@ -170,7 +171,8 @@
         gap: 0;
     }
     .chat{
-        display: none;
+        font-size: 0.7rem;
+        padding: 8px 12px;
     }
     .homepage h3{
         width: 100%;
@@ -184,6 +186,7 @@
     .terms span{
         color: #e9e9e9;
         display: flex;
+        bottom: -24px;
         gap: 5px;
         font-size: 0.6rem;
     }

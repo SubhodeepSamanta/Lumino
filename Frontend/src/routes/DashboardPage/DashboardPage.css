@@ -41,8 +41,11 @@
 
 .options{
     display: flex;
+    max-width: 100%;
     gap: 36px;
     margin-top: 16px;
+    justify-content: center;
+    align-items: center;
 }
 
 .option{
@@ -51,7 +54,7 @@
     flex-direction: column;
     border: 1px solid #555;
     border-radius: 12px;
-    padding: 24px 24px;
+    padding: 1.5rem;
     cursor: pointer;
     opacity: 0.9;
 }
@@ -103,4 +106,100 @@
 .dashboardPage form button img{
     height: 100%;
     width: 100%;
+}
+
+@media screen and (max-width: 1280px) {
+    .text{
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .text-logo h1{
+        font-size: 3rem;
+    }
+    .dashboardPage form{
+        width: 80%;
+    }
+    .options{
+    display: flex;
+    max-width: 100%;
+    gap: 36px;
+    margin-top: 16px;
+    justify-content: center;
+    align-items: center;
+}
+
+.option{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #555;
+    border-radius: 12px;
+    padding: 1.2rem;
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.option span{
+    margin-top: 8px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.option img{
+    height: 30px;
+    width: 30px;
+    margin-bottom: 8px;
+}
+}
+
+@media screen and (max-width:600px) {   
+    .text img{
+        height: 45px;
+        width: 45px;
+    }
+    .text-logo h1{
+        font-size: 2rem;
+    }
+    .options .option{
+        display: none;
+    }
+    .dashboardPage input{
+        flex: 1;
+        font-size: 1rem;
+    }
+    .dashboardPage form button{
+        align-self: flex-end;
+        height: 30px;
+        width: 30px;
+    }
+    .dashboardPage form img{
+        align-self: flex-end;
+        height: 30px;
+        width: 30px;
+    }
+}
+
+@media screen and(max-width:478px) {
+    .dashboardPage form button{
+        align-self: flex-end;
+        height: 30px;
+        width: 30px;
+    }
+}
+
+@media screen and(max-width:380px) {
+    .dashboardPage input{
+    font-size: 0.5rem;
+    }
+    .dashboardPage form button{
+        align-self: flex-end;
+        height: 20px;
+        width: 20px;
+    }
+}
+
+@media screen and(max-width:380px) {
+    
 }

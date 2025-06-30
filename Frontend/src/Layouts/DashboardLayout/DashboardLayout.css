@@ -69,3 +69,9 @@
     flex: 4;
     background-color: #11101C;
 }
+
+@media screen and (max-width:800px) {
+    .menu{
+        display: none;
+    }
+}

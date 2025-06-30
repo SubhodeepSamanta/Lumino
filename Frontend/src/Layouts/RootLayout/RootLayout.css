@@ -37,3 +37,21 @@ header span{
         padding: 16px 32px;
     }
 }
+
+@media screen and (max-width:800px) {
+    .rootLayout{
+        padding: 16px;
+    }
+    .rootLayout header{
+        padding: 8px 16px;
+    }
+}
+
+@media screen and (max-width:478px) {
+    .rootLayout{
+        padding: 16px 0;
+    }
+    .rootLayout header{
+        padding: 8px 32px;
+    }
+}

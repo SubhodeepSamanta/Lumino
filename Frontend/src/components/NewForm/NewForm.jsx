@@ -85,7 +85,6 @@ const NewForm = ({ data , chatId }) => {
     if(!hasRun.current){
     if(data?.history?.length===1){
       const text= data.history[0].parts[0].text;
-      console.log(text);
       const runOnce= async()=>{
         await add([text],chatId, (live) => {
           setAnswer(live);
