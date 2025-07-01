@@ -113,6 +113,9 @@ app.get("/api/userchats",legacyRequireAuth,async(req,res)=>{
   const {userId} = req.auth();
   try{
     const userchats= await UserChats.find({userId});
+    if (!userchats.length || !userchats[0].chats) {
+      return res.status(200).send([]);
+    }
     res.status(200).send(userchats[0].chats);
   }catch(err){
     console.log(err);
