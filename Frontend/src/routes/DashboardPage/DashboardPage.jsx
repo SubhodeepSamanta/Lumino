@@ -1,42 +1,43 @@
-import React, { useEffect } from 'react'
-import './DashboardPage.css'
-import { useAuth } from '@clerk/clerk-react'
-import { useNavigate } from 'react-router-dom';
-import apiRequest from '../../Utils/apiRequest';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useEffect } from "react";
+import "./DashboardPage.css";
+import { useNavigate } from "react-router-dom";
+import apiRequest from "../../Utils/apiRequest";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@clerk/clerk-react";
 
 const DashboardPage = () => {
-  const navigate= useNavigate();
-  const queryClient= useQueryClient();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async (text)=>{
-      const response= await apiRequest.post('/api/chats',{text});
+    mutationFn: async (text) => {
+      const response = await apiRequest.post("/api/chats", { text });
       return response.data;
     },
-    onSuccess:(id)=>{
-      queryClient.invalidateQueries({queryKey:["userChats"]})
+    onSuccess: (id) => {
+      queryClient.invalidateQueries({ queryKey: ["userChats"] });
       navigate(`/dashboard/chats/${id}`);
+    },
+  });
+
+  const { isLoaded, isSignedIn } = useUser();
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      navigate("/sign-in");
     }
-  })
+  }, [isLoaded, isSignedIn, navigate]);
 
-    const { userId, isLoaded}= useAuth();
-    useEffect(()=>{
-        if(isLoaded && !userId){
-            navigate('/sign-in');
-        }
-    },[userId,isLoaded,navigate]);
+  if (!isLoaded) return "Loading...";
 
-    if(!isLoaded) return "Loading...";
-
-    const handleSubmit= async(e)=>{
-      e.preventDefault();
-      const text= e.target.text.value;
-      if(!text) return;
-      mutation.mutate(text);
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const text = e.target.text.value;
+    if (!text) return;
+    mutation.mutate(text);
+  };
 
   return (
-    <div className='dashboardPage'>
+    <div className="dashboardPage">
       <div className="text">
         <div className="text-logo">
           <img src="/logo.png" alt="logo" />
@@ -57,14 +58,19 @@ const DashboardPage = () => {
           </div>
         </div>
       </div>
-      <form onSubmit={(e)=>handleSubmit(e)}>
-        <input type="text"  name="text" placeholder='Ask me anything' autoComplete='off'/>
-        <button type='submit'>
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <input
+          type="text"
+          name="text"
+          placeholder="Ask me anything"
+          autoComplete="off"
+        />
+        <button type="submit">
           <img src="/arrow.png" alt="" />
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;
