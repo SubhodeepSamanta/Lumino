@@ -4,7 +4,7 @@ import "./DashboardLayout.css";
 import ChatList from "../../components/ChatList/ChatList";
 
 const DashboardLayout = () => {
-
+  
   return (
     <div className="dashboardLayout">
       <div className="menu">
