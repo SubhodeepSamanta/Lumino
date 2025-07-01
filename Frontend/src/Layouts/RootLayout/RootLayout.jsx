@@ -14,7 +14,7 @@ const queryClient = new QueryClient()
 
 const RootLayout = () => {
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY} proxyUrl={import.meta.env.VITE_CLERK_PROXY_URL} domain={import.meta.env.VITE_DOMAIN} afterSignOutUrl="/">
       <QueryClientProvider client={queryClient}>
       <div className="rootLayout">
         <header>
