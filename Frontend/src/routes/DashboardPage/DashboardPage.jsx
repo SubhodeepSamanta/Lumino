@@ -19,15 +19,19 @@ const DashboardPage = () => {
     },
   });
 
-  const { isLoaded, isSignedIn } = useUser();
 
-  useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      navigate("/sign-in");
-    }
-  }, [isLoaded, isSignedIn, navigate]);
+  const { user, isLoaded, isSignedIn } = useUser();
 
-  if (!isLoaded) return "Loading...";
+useEffect(() => {
+  console.log("isLoaded:", isLoaded);
+  console.log("isSignedIn:", isSignedIn);
+  console.log("user:", user);
+
+  if (isLoaded && !isSignedIn) {
+    navigate("/sign-in");
+  }
+}, [user, isLoaded, isSignedIn, navigate]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
