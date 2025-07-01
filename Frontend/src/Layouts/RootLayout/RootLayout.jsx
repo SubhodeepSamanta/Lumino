@@ -13,7 +13,12 @@ if (!PUBLISHABLE_KEY) {
 const queryClient = new QueryClient()
 
 const RootLayout = () => {
+  console.log("publishableKey", import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
+console.log("frontendApi", import.meta.env.VITE_CLERK_FRONTEND_API);
+console.log("domain", import.meta.env.VITE_DOMAIN);
+
   return (
+    
     <ClerkProvider
   publishableKey={PUBLISHABLE_KEY}
   frontendApi={import.meta.env.VITE_CLERK_FRONTEND_API}
