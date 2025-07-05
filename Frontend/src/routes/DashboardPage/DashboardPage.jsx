@@ -3,7 +3,7 @@ import "./DashboardPage.css";
 import { useNavigate } from "react-router-dom";
 import apiRequest from "../../Utils/apiRequest";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -20,9 +20,13 @@ const DashboardPage = () => {
   });
 
 
-const { user, isLoaded, isSignedIn } = useAuth();
-
+const { isLoaded, isSignedIn } = useAuth();
+const {user}= useUser();
 useEffect(() => {
+  console.log("isLoaded:", isLoaded);
+  console.log("isSignedIn:", isSignedIn);
+  console.log("user:", user);
+
   if (isLoaded && !isSignedIn) {
     navigate("/sign-in");
   }
