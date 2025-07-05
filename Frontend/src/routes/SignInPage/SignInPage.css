@@ -1,6 +1,141 @@
-.signInPage{
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.signInPage {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0E0C16 0%, #0E0C16 100%);
+}
+
+.authCard {
+  background: #18122b;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 #00000044;
+  padding: 2.5rem 2rem 2rem 2rem;
+  width: 100%;
+  max-width: 370px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.authLogo {
+  width: 60px;
+  margin-bottom: 0.5rem;
+  align-self: center;
+}
+
+.authForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.authForm input {
+  background: #23213a;
+  border: 1px solid #443c68;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  color: #ececec;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.authForm input:focus {
+  border: 1.5px solid #635985;
+}
+
+.authForm button {
+  background: linear-gradient(90deg, #635985 0%, #18122b 100%);
+  color: #ececec;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.authForm button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.divider {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #23213a;
+  line-height: 0.1em;
+  margin: 1.2rem 0 1rem 0;
+}
+
+.divider span {
+  background: #18122b;
+  color: #635985;
+  padding: 0 1rem;
+  font-size: 0.95rem;
+}
+
+.google-btn {
+  width: 100%;
+  background: #fff;
+  color: #23213a;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px 0 #00000022;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.google-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.google-icon {
+  vertical-align: middle;
+}
+
+.error {
+  color: #ff6b6b;
+  background: #2d1a1a;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.switchLink {
+  margin-top: 0.7rem;
+  color: #bcbcbc;
+  font-size: 0.97rem;
+  text-align: center;
+}
+
+.switchLink a {
+  color: #635985;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+  .authCard {
+    padding: 1.5rem 0.7rem 1.5rem 0.7rem;
+    max-width: 98vw;
+  }
+  .authLogo {
+    width: 44px;
+  }
 }

@@ -4,10 +4,32 @@ import ImageKit from "imagekit";
 import connectDB from "./utilities/connectDB.js";
 import Chat from "./models/chat.model.js";
 import UserChats from "./models/userChats.model.js";
-import { clerkMiddleware } from '@clerk/express';
+import admin from "firebase-admin";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const serviceAccount = require("./firebaseServiceAccount.json");
 
 const app = express();
 const PORT = process.env.PORT;
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const firebaseAuthMiddleware = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).send("Unauthorized: No token provided");
+  }
+  const idToken = authHeader.split("Bearer ")[1];
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    req.user = decodedToken;
+    next();
+  } catch (err) {
+    return res.status(401).send("Unauthorized: Invalid token");
+  }
+};
 
 app.use(
   cors({
@@ -18,19 +40,6 @@ app.use(
 
 app.use(express.json());
 
-connectDB();
-
-app.use(express.json());
-
-const connectDb= async()=>{
-  try{
-  const conn= await mongoose.connect(process.env.MONGO_URI);
-  console.log(`database connected on ${conn.connection.host}`);
-  }catch(err){
-    console.error(err);
-    process.exit(1);
-  }
-}
 connectDB();
 
 const imagekit = new ImageKit({
@@ -44,25 +53,9 @@ app.get("/api/upload", (req, res) => {
   res.send(result);
 });
 
-app.use(clerkMiddleware());
-
-const legacyRequireAuth = async (req, res, next) => {
-  try {
-    const {userId} = req.auth();
-    if(userId){
-      next();
-    }else{
-      return res.status(401).send("Unauthorised");
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-app.post("/api/chats", legacyRequireAuth, async (req, res) => {
+app.post("/api/chats", firebaseAuthMiddleware, async (req, res) => {
   const { text } = req.body;
-  const {userId} = req.auth();
-  
+  const userId = req.user.uid;
   if (!userId) {
     return res.status(401).send("Unauthorised");
   }
@@ -72,10 +65,7 @@ app.post("/api/chats", legacyRequireAuth, async (req, res) => {
       history: [{ role: "user", parts: [{ text }] }],
     });
     const savedChat = await newChat.save();
-
-    //userchat exists
     const userChats = await UserChats.findOne({ userId });
-
     if (!userChats) {
       const newUserChats = new UserChats({
         userId,
@@ -109,33 +99,33 @@ app.post("/api/chats", legacyRequireAuth, async (req, res) => {
   }
 });
 
-app.get("/api/userchats",legacyRequireAuth,async(req,res)=>{
-  const {userId} = req.auth();
-  try{
-    const userchats= await UserChats.find({userId});
+app.get("/api/userchats", firebaseAuthMiddleware, async (req, res) => {
+  const userId = req.user.uid;
+  try {
+    const userchats = await UserChats.find({ userId });
     if (!userchats.length || !userchats[0].chats) {
       return res.status(200).send([]);
     }
     res.status(200).send(userchats[0].chats);
-  }catch(err){
+  } catch (err) {
     console.log(err);
     return res.status(500).send("Error while fetching userchats");
   }
-})
+});
 
-app.get("/api/chats/:id",legacyRequireAuth,async(req,res)=>{
-  const {userId} = req.auth();
-  try{
-    const chat= await Chat.findOne({_id: req.params.id ,userId});
+app.get("/api/chats/:id", firebaseAuthMiddleware, async (req, res) => {
+  const userId = req.user.uid;
+  try {
+    const chat = await Chat.findOne({ _id: req.params.id, userId });
     res.status(200).send(chat);
-  }catch(err){
+  } catch (err) {
     console.log(err);
     return res.status(500).send("Error while fetching userchats");
   }
-})
+});
 
-app.put('/api/chats/:id',legacyRequireAuth, async(req,res)=>{
-  const {userId} = req.auth();
+app.put('/api/chats/:id', firebaseAuthMiddleware, async(req,res)=>{
+  const userId = req.user.uid;
   const {question,answer,img}= req.body;
   const newItems= [
     ...(question?[{role:"user", parts:[{text:question}],...(img && {img})}]:[]),
@@ -151,7 +141,6 @@ app.put('/api/chats/:id',legacyRequireAuth, async(req,res)=>{
         }
       }
     );
-
     res.status(200).send(updatedChat);
   }catch(err){
     console.log(err);

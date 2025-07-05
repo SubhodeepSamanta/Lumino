@@ -12,9 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@clerk/express": "^1.7.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "firebase-admin": "^13.4.0",
     "imagekit": "^6.0.0",
     "mongoose": "^8.16.1"
   }

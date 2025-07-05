@@ -1,49 +1,76 @@
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import "./RootLayout.css";
-import { ClerkProvider } from '@clerk/clerk-react'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key");
-}
+import { FirebaseAuthProvider, useFirebaseAuth } from '../../Utils/FirebaseAuthContext';
 
 const queryClient = new QueryClient()
 
-const RootLayout = () => {
-  console.log("publishableKey", import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
-console.log("frontendApi", import.meta.env.VITE_CLERK_FRONTEND_API);
-console.log("domain", import.meta.env.VITE_DOMAIN);
+function HeaderUserSection() {
+  const { user, signOutUser } = useFirebaseAuth();
+  const navigate = useNavigate();
+  const [dropdown, setDropdown] = useState(false);
+
+  if (!user) return null;
+
+  const avatarUrl = user.photoURL || '/public/avatar-default.png';
+  const displayName = user.displayName || user.email || 'User';
+
+  const handleSignOut = async () => {
+    await signOutUser();
+    navigate('/');
+  };
 
   return (
-    
-    <ClerkProvider
-  publishableKey={PUBLISHABLE_KEY}
-  frontendApi={import.meta.env.VITE_CLERK_FRONTEND_API}
-  proxyUrl={import.meta.env.VITE_CLERK_PROXY_URL}
-  domain={import.meta.env.VITE_DOMAIN}
-  afterSignOutUrl="/">
-      <QueryClientProvider client={queryClient}>
-      <div className="rootLayout">
-        <header>
-          <Link to="/">
-            <img src="/logo.png" alt="logo" />
-            <span>Lumino</span>
-          </Link>
-          <div>
-                <SignedIn>
-                <UserButton />
-                </SignedIn>
+    <div
+      className="profile-menu"
+      onMouseEnter={() => setDropdown(true)}
+      onMouseLeave={() => setDropdown(false)}
+      tabIndex={0}
+    >
+      <img
+        src={user.photoURL || "/logo.png"}
+        alt="Profile"
+        className="profile-avatar"
+        title={displayName}
+      />
+      {dropdown && (
+        <div className="profile-dropdown">
+          <div className="profile-info">
+            <img
+              src={user.photoURL || "/logo.png"}
+              alt="Profile"
+              className="profile-avatar-large"
+            />
+            <div className="profile-name">{displayName}</div>
           </div>
-        </header>
-        <main>
-          <Outlet />
-        </main>
-      </div>
+          <button className="signout-btn" onClick={handleSignOut}>
+            Sign Out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const RootLayout = () => {
+  return (
+    <FirebaseAuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <div className="rootLayout">
+          <header>
+            <Link to="/">
+              <img src="/logo.png" alt="logo" />
+              <span>Lumino</span>
+            </Link>
+            <HeaderUserSection />
+          </header>
+          <main>
+            <Outlet />
+          </main>
+        </div>
       </QueryClientProvider>
-    </ClerkProvider>
+    </FirebaseAuthProvider>
   );
 };
 

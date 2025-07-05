@@ -3,7 +3,7 @@ import "./DashboardPage.css";
 import { useNavigate } from "react-router-dom";
 import apiRequest from "../../Utils/apiRequest";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useFirebaseAuth } from '../../Utils/FirebaseAuthContext';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -19,23 +19,17 @@ const DashboardPage = () => {
     },
   });
 
+  const { user, loading } = useFirebaseAuth();
 
-const { isLoaded, isSignedIn } = useAuth();
-const {user}= useUser();
-useEffect(() => {
-  console.log("isLoaded:", isLoaded);
-  console.log("isSignedIn:", isSignedIn);
-  console.log("user:", user);
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/sign-in");
+    }
+  }, [user, loading, navigate]);
 
-  if (isLoaded && !isSignedIn) {
-    navigate("/sign-in");
+  if (loading) {
+    return <div>Loading...</div>;
   }
-}, [user, isLoaded, isSignedIn, navigate]);
-
-if (!isLoaded) {
-  return <div>Loading...</div>;
-}
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
