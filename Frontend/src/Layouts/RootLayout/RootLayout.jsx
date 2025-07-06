@@ -38,7 +38,7 @@ function HeaderUserSection() {
         <div className="profile-dropdown">
           <div className="profile-info">
             <img
-              src={user.photoURL || "/logo.png"}
+              src={avatarUrl}
               alt="Profile"
               className="profile-avatar-large"
             />
