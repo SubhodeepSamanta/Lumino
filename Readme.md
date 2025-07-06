@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/logo.png" alt="Lumino Logo" width="140"/>
+<img src="Frontend/public/logo.png" alt="Lumino Logo" width="140"/>
 
 # ✨ Lumino AI – Your Intelligent Productivity Companion ✨
 
@@ -138,7 +138,7 @@ npm run dev
 
 | Home | Sign Up | Dashboard | Chat |
 |------|--------|-----------|------|
-| ![Home](Screenshots/Home.png) | ![Sign Up](screenshots/Signup.png) | ![Dashboard](screenshots/Dashboard.png) | ![Chat](screenshots/Chat.png) |
+| ![Home](Screenshots/Home.png) | ![Sign Up](Screenshots/Signup.png) | ![Dashboard](Screenshots/Dashboard.png) | ![Chat](Screenshots/Chat.png) |
 
 </div>
 
